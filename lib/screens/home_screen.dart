@@ -129,32 +129,40 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void showNoteDialog([Note? note]) {
+void showNoteDialog([Note? note]) {
   final titleController = TextEditingController(text: note?.title ?? '');
   final contentController = TextEditingController(text: note?.content ?? '');
+
+  final theme = Theme.of(context);
+  final colorScheme = theme.colorScheme;
 
   showDialog(
     context: context,
     builder: (ctx) => Dialog(
+      backgroundColor: colorScheme.background,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 note == null ? 'Add Note' : 'Edit Note',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onBackground,
+                ),
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: titleController,
+                style: TextStyle(color: colorScheme.onSurface),
                 decoration: InputDecoration(
                   labelText: 'Title',
+                  labelStyle: TextStyle(color: colorScheme.onSurface),
                   filled: true,
-                  fillColor: Colors.grey[200],
+                  fillColor: colorScheme.surface,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
@@ -162,11 +170,13 @@ class _HomeScreenState extends State<HomeScreen> {
               TextField(
                 controller: contentController,
                 maxLines: 5,
+                style: TextStyle(color: colorScheme.onSurface),
                 decoration: InputDecoration(
                   labelText: 'Content',
                   alignLabelWithHint: true,
+                  labelStyle: TextStyle(color: colorScheme.onSurface),
                   filled: true,
-                  fillColor: Colors.grey[200],
+                  fillColor: colorScheme.surface,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
@@ -209,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   );
 }
+
   void _filterNotes() {
     final query = searchController.text.toLowerCase();
 

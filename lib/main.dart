@@ -33,14 +33,13 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
           elevation: 1,
         ),
-       cardTheme: const CardThemeData(
-  color: Colors.white,
-  elevation: 3,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(16)),
-  ),
-),
-
+        cardTheme: const CardThemeData(
+          color: Colors.white,
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
@@ -71,7 +70,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      // ✅ Dark Theme
+      // ✅ Dark Theme (cleaned & enhanced)
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.tealAccent,
@@ -79,13 +78,12 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFF121212),
         cardTheme: const CardThemeData(
-  color: Color(0xFF1E1E1E),
-  elevation: 3,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(16)),
-  ),
-),
-
+          color: Color(0xFF1E1E1E),
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           fillColor: Color(0xFF1E1E1E),
@@ -112,7 +110,15 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.black,
         ),
         textTheme: const TextTheme(
-          bodyMedium: TextStyle(fontSize: 15),
+          titleLarge: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+          titleMedium: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+          bodyMedium: TextStyle(color: Colors.white70, fontSize: 15),
+          bodySmall: TextStyle(color: Colors.white54),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1F1F1F),
+          foregroundColor: Colors.white,
+          elevation: 1,
         ),
       ),
 
