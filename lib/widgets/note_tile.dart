@@ -5,12 +5,14 @@ class NoteTile extends StatelessWidget {
   final Note note;
   final void Function(Note note) onEdit;
   final void Function(String id) onDelete;
+  final void Function(String id) onTogglePin; // 👈 added
 
   const NoteTile({
     super.key,
     required this.note,
     required this.onEdit,
     required this.onDelete,
+    required this.onTogglePin, // 👈 added
   });
 
   @override
@@ -42,11 +44,24 @@ class NoteTile extends StatelessWidget {
             ),
           ),
         ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete),
-          color: Colors.redAccent,
-          tooltip: 'Delete Note',
-          onPressed: () => onDelete(note.id),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(
+                note.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                color: Colors.amber,
+              ),
+              tooltip: note.isPinned ? 'Unpin' : 'Pin',
+              onPressed: () => onTogglePin(note.id),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              color: Colors.redAccent,
+              tooltip: 'Delete Note',
+              onPressed: () => onDelete(note.id),
+            ),
+          ],
         ),
         onTap: () => onEdit(note),
       ),

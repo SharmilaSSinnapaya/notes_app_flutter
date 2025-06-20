@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       setState(() {
         notes = loadedNotes;
-        filteredNotes = loadedNotes;
+        _filterNotes();
       });
     }
   }
@@ -65,7 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       final index = notes.indexWhere((note) => note.id == id);
       if (index != -1) {
-        notes[index] = Note(id: id, title: newTitle, content: newContent);
+        notes[index] = Note(
+          id: id,
+          title: newTitle,
+          content: newContent,
+          isPinned: notes[index].isPinned,
+        );
         _filterNotes();
       }
     });
@@ -76,6 +81,17 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       notes.removeWhere((note) => note.id == id);
       _filterNotes();
+    });
+    saveNotes();
+  }
+
+  void togglePin(String id) {
+    setState(() {
+      final index = notes.indexWhere((note) => note.id == id);
+      if (index != -1) {
+        notes[index].isPinned = !notes[index].isPinned;
+        _filterNotes();
+      }
     });
     saveNotes();
   }
@@ -129,11 +145,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _filterNotes() {
     final query = searchController.text.toLowerCase();
+
+    final filtered = notes.where((note) {
+      return note.title.toLowerCase().contains(query) ||
+          note.content.toLowerCase().contains(query);
+    }).toList();
+
+    filtered.sort((a, b) {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return 0;
+    });
+
     setState(() {
-      filteredNotes = notes.where((note) {
-        return note.title.toLowerCase().contains(query) ||
-            note.content.toLowerCase().contains(query);
-      }).toList();
+      filteredNotes = filtered;
     });
   }
 
@@ -186,7 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: NoteTile(
                           note: note,
                           onEdit: showNoteDialog,
-                          onDelete: deleteNote, // This shows the trailing delete button
+                          onDelete: deleteNote,
+                          onTogglePin: togglePin, // 👈 NEW
                         ),
                       );
                     },
