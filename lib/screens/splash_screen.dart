@@ -8,24 +8,41 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeIn;
+
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return; // ✅ Safe check before using context
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
 
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 600),
-          pageBuilder: (_, __, ___) => const HomeScreen(),
-          transitionsBuilder: (_, animation, __, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
+    _controller.forward();
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
+     Navigator.of(context).pushReplacement(
+  PageRouteBuilder(
+    transitionDuration: const Duration(milliseconds: 600),
+    pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(opacity: animation, child: child);
+    },
+  ),
+);
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -34,29 +51,53 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.sticky_note_2_rounded,
-              size: 80,
-              color: theme.primaryColor,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Notes App',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onBackground,
+      body: FadeTransition(
+        opacity: _fadeIn,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: theme.primaryColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.sticky_note_2_rounded,
+                  size: 72,
+                  color: theme.primaryColor,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            CircularProgressIndicator(
-              color: theme.primaryColor.withOpacity(0.7),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                'Note Taker',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onBackground,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Your smart notes companion',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: theme.colorScheme.onBackground.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: theme.primaryColor,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
