@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../screens/about_screen.dart';
 import '../screens/home_screen.dart';
+import '../screens/recently_deleted_screen.dart';
 import '../providers/theme_provider.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -22,16 +24,33 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
+              );
             },
           ),
           ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About'),
+            leading: const Icon(Icons.delete_outline),
+            title: const Text('Recently Deleted'),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const RecentlyDeletedScreen()),
+              );
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AboutScreen()),
+              );
+            },
+          ),
+          const Divider(),
           SwitchListTile(
             title: const Text('Dark Mode'),
             value: themeProvider.isDarkMode,

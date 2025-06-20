@@ -3,12 +3,14 @@ class Note {
   String title;
   String content;
   bool isPinned;
+  DateTime? deletedAt; // ← NEW: for recently deleted support
 
   Note({
     required this.id,
     required this.title,
     required this.content,
-    this.isPinned = false, // default to unpinned
+    this.isPinned = false,
+    this.deletedAt,
   });
 
   // Convert Note to Map (for saving to storage)
@@ -18,6 +20,7 @@ class Note {
       'title': title,
       'content': content,
       'isPinned': isPinned,
+      'deletedAt': deletedAt?.toIso8601String(),
     };
   }
 
@@ -28,6 +31,9 @@ class Note {
       title: map['title'] ?? '',
       content: map['content'] ?? '',
       isPinned: map['isPinned'] ?? false,
+      deletedAt: map['deletedAt'] != null
+          ? DateTime.tryParse(map['deletedAt'])
+          : null,
     );
   }
 }

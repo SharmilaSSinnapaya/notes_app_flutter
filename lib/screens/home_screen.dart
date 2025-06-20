@@ -54,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       id: Random().nextDouble().toString(),
       title: title,
       content: content,
+      deletedAt: null,
     );
     setState(() {
       notes.add(note);
@@ -71,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: newTitle,
           content: newContent,
           isPinned: notes[index].isPinned,
+          deletedAt: notes[index].deletedAt,
         );
         _filterNotes();
       }
@@ -80,7 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void deleteNote(String id) {
     setState(() {
-      notes.removeWhere((note) => note.id == id);
+      final index = notes.indexWhere((note) => note.id == id);
+      if (index != -1) {
+        notes[index].deletedAt = DateTime.now(); // soft delete
+      }
       _filterNotes();
     });
     saveNotes();
@@ -114,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
               deleteNote(note.id);
               Navigator.of(ctx).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Note deleted')),
+                const SnackBar(content: Text('Note moved to Recently Deleted')),
               );
             },
             child: const Text('Delete'),
@@ -174,10 +179,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void _filterNotes() {
     final query = searchController.text.toLowerCase();
 
-    final matching = notes.where((note) {
-      return note.title.toLowerCase().contains(query) ||
-          note.content.toLowerCase().contains(query);
-    }).toList();
+    final matching = notes.where((note) =>
+        note.deletedAt == null &&
+        (note.title.toLowerCase().contains(query) ||
+            note.content.toLowerCase().contains(query))).toList();
 
     setState(() {
       filteredPinnedNotes = matching.where((n) => n.isPinned).toList();
@@ -225,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             direction: DismissDirection.endToStart,
                             confirmDismiss: (_) async {
                               _confirmDelete(note);
-                              return false; // prevent automatic dismissal
+                              return false;
                             },
                             background: Container(
                               color: Colors.red,
