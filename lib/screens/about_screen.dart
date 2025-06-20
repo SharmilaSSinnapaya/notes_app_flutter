@@ -13,7 +13,7 @@ class AboutScreen extends StatelessWidget {
           child: Text(
             'This Notes App was built using Flutter Web.\n'
             'It supports Create, Read, Update, Delete functionality.\n\n'
-            'Created by: Mashny.Kantarubi.Sharmila.Hon.Tan',
+            'Created by: Mashny,Kantarubi,Sharmila,Yeeshuan & Tan',
             style: TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
