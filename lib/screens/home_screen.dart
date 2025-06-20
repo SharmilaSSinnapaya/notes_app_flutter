@@ -130,52 +130,85 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void showNoteDialog([Note? note]) {
-    final titleController = TextEditingController(text: note?.title ?? '');
-    final contentController = TextEditingController(text: note?.content ?? '');
+  final titleController = TextEditingController(text: note?.title ?? '');
+  final contentController = TextEditingController(text: note?.content ?? '');
 
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(note == null ? 'Add Note' : 'Edit Note'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            TextField(
-              controller: contentController,
-              decoration: const InputDecoration(labelText: 'Content'),
-            ),
-          ],
+  showDialog(
+    context: context,
+    builder: (ctx) => Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                note == null ? 'Add Note' : 'Edit Note',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: contentController,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: 'Content',
+                  alignLabelWithHint: true,
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    icon: Icon(note == null ? Icons.add : Icons.save),
+                    label: Text(note == null ? 'Add' : 'Update'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      final title = titleController.text.trim();
+                      final content = contentController.text.trim();
+                      if (title.isEmpty || content.isEmpty) return;
+
+                      if (note == null) {
+                        addNote(title, content);
+                      } else {
+                        updateNote(note.id, title, content);
+                      }
+
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final title = titleController.text.trim();
-              final content = contentController.text.trim();
-              if (title.isEmpty || content.isEmpty) return;
-
-              if (note == null) {
-                addNote(title, content);
-              } else {
-                updateNote(note.id, title, content);
-              }
-
-              Navigator.of(ctx).pop();
-            },
-            child: Text(note == null ? 'Add' : 'Update'),
-          ),
-        ],
       ),
-    );
-  }
-
+    ),
+  );
+}
   void _filterNotes() {
     final query = searchController.text.toLowerCase();
 
