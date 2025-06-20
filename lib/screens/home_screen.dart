@@ -232,7 +232,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Notes App')),
+      appBar: AppBar(
+  title: Text('Notes App (${notes.where((n) => n.deletedAt == null).length})'),
+),
       drawer: const AppDrawer(),
       body: Column(
         children: [
