@@ -97,6 +97,33 @@ class _HomeScreenState extends State<HomeScreen> {
     saveNotes();
   }
 
+  void _confirmDelete(Note note) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Note?'),
+        content: const Text('Are you sure you want to delete this note?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              deleteNote(note.id);
+              Navigator.of(ctx).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Note deleted')),
+              );
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void showNoteDialog([Note? note]) {
     final titleController = TextEditingController(text: note?.title ?? '');
     final contentController = TextEditingController(text: note?.content ?? '');
@@ -196,22 +223,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           (note) => Dismissible(
                             key: Key(note.id),
                             direction: DismissDirection.endToStart,
+                            confirmDismiss: (_) async {
+                              _confirmDelete(note);
+                              return false; // prevent automatic dismissal
+                            },
                             background: Container(
                               color: Colors.red,
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: const Icon(Icons.delete, color: Colors.white),
                             ),
-                            onDismissed: (_) {
-                              deleteNote(note.id);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Note deleted')),
-                              );
-                            },
                             child: NoteTile(
                               note: note,
                               onEdit: showNoteDialog,
-                              onDelete: deleteNote,
+                              onDelete: (_) => _confirmDelete(note),
                               onTogglePin: togglePin,
                             ),
                           ),
@@ -226,22 +251,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           (note) => Dismissible(
                             key: Key(note.id),
                             direction: DismissDirection.endToStart,
+                            confirmDismiss: (_) async {
+                              _confirmDelete(note);
+                              return false;
+                            },
                             background: Container(
                               color: Colors.red,
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: const Icon(Icons.delete, color: Colors.white),
                             ),
-                            onDismissed: (_) {
-                              deleteNote(note.id);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Note deleted')),
-                              );
-                            },
                             child: NoteTile(
                               note: note,
                               onEdit: showNoteDialog,
-                              onDelete: deleteNote,
+                              onDelete: (_) => _confirmDelete(note),
                               onTogglePin: togglePin,
                             ),
                           ),
