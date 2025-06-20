@@ -5,14 +5,14 @@ class NoteTile extends StatelessWidget {
   final Note note;
   final void Function(Note note) onEdit;
   final void Function(String id) onDelete;
-  final void Function(String id) onTogglePin; // 👈 added
+  final void Function(String id) onTogglePin;
 
   const NoteTile({
     super.key,
     required this.note,
     required this.onEdit,
     required this.onDelete,
-    required this.onTogglePin, // 👈 added
+    required this.onTogglePin,
   });
 
   @override
@@ -22,6 +22,7 @@ class NoteTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       elevation: 4,
+      color: note.color ?? theme.cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -54,6 +55,12 @@ class NoteTile extends StatelessWidget {
               ),
               tooltip: note.isPinned ? 'Unpin' : 'Pin',
               onPressed: () => onTogglePin(note.id),
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              color: Colors.blueAccent,
+              tooltip: 'Edit Note',
+              onPressed: () => onEdit(note),
             ),
             IconButton(
               icon: const Icon(Icons.delete),
