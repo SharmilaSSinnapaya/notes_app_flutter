@@ -1,3 +1,4 @@
+import '../screens/note_detail_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/note.dart';
 
@@ -70,7 +71,13 @@ class NoteTile extends StatelessWidget {
             ),
           ],
         ),
-        onTap: () => onEdit(note),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => NoteDetailScreen(note: note),
+            ),
+          );
+        },
       ),
     );
   }
