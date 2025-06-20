@@ -17,7 +17,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Note> notes = [];
-  List<Note> filteredNotes = [];
+  List<Note> filteredPinnedNotes = [];
+  List<Note> filteredUnpinnedNotes = [];
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -146,19 +147,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void _filterNotes() {
     final query = searchController.text.toLowerCase();
 
-    final filtered = notes.where((note) {
+    final matching = notes.where((note) {
       return note.title.toLowerCase().contains(query) ||
           note.content.toLowerCase().contains(query);
     }).toList();
 
-    filtered.sort((a, b) {
-      if (a.isPinned && !b.isPinned) return -1;
-      if (!a.isPinned && b.isPinned) return 1;
-      return 0;
-    });
-
     setState(() {
-      filteredNotes = filtered;
+      filteredPinnedNotes = matching.where((n) => n.isPinned).toList();
+      filteredUnpinnedNotes = matching.where((n) => !n.isPinned).toList();
     });
   }
 
@@ -187,35 +183,71 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            child: filteredNotes.isEmpty
+            child: (filteredPinnedNotes.isEmpty && filteredUnpinnedNotes.isEmpty)
                 ? const Center(child: Text('No matching notes'))
-                : ListView.builder(
-                    itemCount: filteredNotes.length,
-                    itemBuilder: (ctx, i) {
-                      final note = filteredNotes[i];
-                      return Dismissible(
-                        key: Key(note.id),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          color: Colors.red,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: const Icon(Icons.delete, color: Colors.white),
+                : ListView(
+                    children: [
+                      if (filteredPinnedNotes.isNotEmpty) ...[
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Text('Pinned', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
-                        onDismissed: (_) {
-                          deleteNote(note.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Note deleted')),
-                          );
-                        },
-                        child: NoteTile(
-                          note: note,
-                          onEdit: showNoteDialog,
-                          onDelete: deleteNote,
-                          onTogglePin: togglePin, // 👈 NEW
+                        ...filteredPinnedNotes.map(
+                          (note) => Dismissible(
+                            key: Key(note.id),
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              color: Colors.red,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: const Icon(Icons.delete, color: Colors.white),
+                            ),
+                            onDismissed: (_) {
+                              deleteNote(note.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Note deleted')),
+                              );
+                            },
+                            child: NoteTile(
+                              note: note,
+                              onEdit: showNoteDialog,
+                              onDelete: deleteNote,
+                              onTogglePin: togglePin,
+                            ),
+                          ),
                         ),
-                      );
-                    },
+                      ],
+                      if (filteredUnpinnedNotes.isNotEmpty) ...[
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Text('Others', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                        ...filteredUnpinnedNotes.map(
+                          (note) => Dismissible(
+                            key: Key(note.id),
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              color: Colors.red,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: const Icon(Icons.delete, color: Colors.white),
+                            ),
+                            onDismissed: (_) {
+                              deleteNote(note.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Note deleted')),
+                              );
+                            },
+                            child: NoteTile(
+                              note: note,
+                              onEdit: showNoteDialog,
+                              onDelete: deleteNote,
+                              onTogglePin: togglePin,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
           ),
         ],
