@@ -1,16 +1,49 @@
-# notes_app
+# 📝 Note Taker – Flutter Notes App
 
-A new Flutter project.
+Note Taker is a cross-platform Flutter Notes Application built for Windows (Chrome/Web). It supports all basic CRUD functionalities along with advanced features like dark mode, pinned notes, recently deleted notes.
 
-## Getting Started
+This project was developed as part of our Group Project to demonstrate collaborative software development and version control using GitHub.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 👨‍💻 Group Members
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+| Name     | Role / Contribution                                                        
+|----------|------------------------------------------------------------------------------------------|
+| Sharmila | Project Setup, Splash Screen, Dark Mode Toggle,Recently Deleted Page, Update Home Screen |
+| Kantarubi| Pin/Unpin Notes Feature, Confirmation Before Deletion, Add Total Number of Note          |
+| Mashny   | Seperate Section, Added Styling, About Page, Changed App Logo                            |
+| Yeeshuan | Documentation & Testing                                                                  |
+| Tan Yan  | UI Design & Testing                                                                      |
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🚀 Features
+
+- ✏️ Create, read, update, delete notes (CRUD)
+- 📌 Pin and unpin important notes
+- 🗑️ View and restore notes from the **Recently Deleted** page
+- 🌙 Toggle between light and dark mode
+- 🔍 Search notes by content
+- 📁 Neat and clean responsive UI
+- 📦 Flutter web and desktop (Windows Chrome) compatible
+
+---
+
+## 🛠️ Tech Stack
+
+- [Flutter](https://flutter.dev/) SDK
+- [Dart](https://dart.dev/)
+- [VS Code](https://code.visualstudio.com/)
+- [Git & GitHub](https://github.com/) for version control
+
+---
+
+## 💻 How to Run the App
+
+> Make sure you have Flutter SDK installed. If not, follow the official guide: https://docs.flutter.dev/get-started/install
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/notes_app_flutter.git
+   cd notes_app_flutter
